@@ -32,7 +32,20 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        run: |
+          # Verifica se há arquivos TypeScript antes de compilar
+          if [ -d "src" ] && [ -n "$(find src -name '*.ts' -type f 2>/dev/null)" ]; then
+            echo "Compilando arquivos TypeScript..."
+            npm run build
+          else
+            echo "Nenhum arquivo TypeScript encontrado. Pulando o build."
+          fi
+          # Garante que o diretório dist existe
+          mkdir -p dist
+          # Cria app.js se não existir (necessário para o index.html)
+          if [ ! -f "dist/app.js" ]; then
+            echo "// Arquivo JavaScript vazio - adicione seus arquivos TypeScript em src/" > dist/app.js
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
