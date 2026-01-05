@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padronizador</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: Arial, sans-serif;
+        }
+
+        .script-container {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .script-container input {
+            flex: 1;
+        }
+
+        .btn-remove {
+            background-color: #dc3545;
+            color: white;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            font-size: 16px;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .btn-remove:hover {
+            background-color: #c82333;
+        }
+
+        .repo-group {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .repo-group select {
+            flex: 1;
+        }
+
+        .repo-group input {
+            flex: 2;
+        }
+
+        .repo-group .btn-remove {
+            width: 30px;
+            height: 38px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .error {
+            border-color: #dc3545 !important;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .modal-header h2 {
+            color: #333;
+            margin: 0;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-section {
+            margin-bottom: 25px;
+        }
+
+        .modal-section h3 {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .repo-commit {
+            margin-bottom: 15px;
+        }
+
+        .repo-commit h4 {
+            color: #007bff;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .message-box {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            padding-top: 15px;
+            border-top: 2px solid #ddd;
+        }
+
+        .btn-copy {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background-color: #138496;
+        }
+
+        .btn-close {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-close:hover {
+            background-color: #545b62;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Padronizador</h1>
+        
+        <button class="btn-danger" onclick="limparTudo()">Limpar Tudo</button>
+
+        <div class="form-group">
+            <label for="processo">Processo *</label>
+            <input type="text" id="processo" placeholder="000000/0000" maxlength="11">
+            <div id="processoError" class="error-message"></div>
+        </div>
+
+        <div class="form-group">
+            <label>Script</label>
+            <div id="scriptsContainer">
+                <div class="script-container">
+                    <input type="text" class="script-input" placeholder="Digite o script">
+                </div>
+            </div>
+            <button class="btn-secondary" style="margin-top: 10px;" onclick="adicionarScript()">Adicionar novo script</button>
+        </div>
+
+        <div class="form-group">
+            <div class="checkbox-group">
+                <input type="checkbox" id="retrabalho">
+                <label for="retrabalho" style="margin-bottom: 0;">Retrabalho</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Repositório e Resumo</label>
+            <div id="repositoriosContainer">
+                <div class="repo-group">
+                    <select class="repositorio-select">
+                        <option value="">Selecione...</option>
+                        <option value="cpe-jdk-execucao">cpe-jdk-execucao</option>
+                        <option value="cpe-jdk-basecontabil">cpe-jdk-basecontabil</option>
+                    </select>
+                    <input type="text" class="resumo-input" placeholder="Resumo da alteração">
+                </div>
+            </div>
+            <button class="btn-secondary" style="margin-top: 10px;" onclick="adicionarRepositorio()">Adicionar repositório</button>
+        </div>
+
+        <div class="form-group">
+            <label for="detalhamento">Detalhamento da Alteração</label>
+            <textarea id="detalhamento" placeholder="Descreva em detalhes a alteração realizada..."></textarea>
+        </div>
+
+        <button class="btn-success" onclick="finalizar()">Finalizar</button>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Mensagens Geradas</h2>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3>Mensagens de Commit</h3>
+                    <div id="mensagensCommitContainer"></div>
+                </div>
+                <div class="modal-section">
+                    <h3>Resposta de Protocolo</h3>
+                    <div class="message-box" id="mensagemProtocolo">Em desenvolvimento...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-close" onclick="fecharModal()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const processoInput = document.getElementById('processo');
+
+        processoInput.addEventListener('input', function(e) {
+            let valor = e.target.value.replace(/\D/g, '');
+            
+            if (valor.length > 10) {
+                valor = valor.substring(0, 10);
+            }
+            
+            if (valor.length > 6) {
+                const parte1 = valor.substring(0, 6).padStart(6, '0');
+                const parte2 = valor.substring(6, 10);
+                e.target.value = parte1 + '/' + parte2;
+            } else if (valor.length > 0) {
+                e.target.value = valor;
+            } else {
+                e.target.value = '';
+            }
+            
+            document.getElementById('processoError').textContent = '';
+            processoInput.classList.remove('error');
+        });
+
+        function adicionarScript() {
+            const container = document.getElementById('scriptsContainer');
+            const novoScript = document.createElement('div');
+            novoScript.className = 'script-container';
+            novoScript.innerHTML = `
+                <input type="text" class="script-input" placeholder="Digite o script">
+                <button class="btn-remove" onclick="removerScript(this)" title="Remover script">×</button>
+            `;
+            container.appendChild(novoScript);
+        }
+
+        function removerScript(botao) {
+            const container = botao.parentElement;
+            container.remove();
+        }
+
+        function adicionarRepositorio() {
+            const container = document.getElementById('repositoriosContainer');
+            const novoRepo = document.createElement('div');
+            novoRepo.className = 'repo-group';
+            novoRepo.innerHTML = `
+                <select class="repositorio-select">
+                    <option value="">Selecione...</option>
+                    <option value="cpe-jdk-execucao">cpe-jdk-execucao</option>
+                    <option value="cpe-jdk-basecontabil">cpe-jdk-basecontabil</option>
+                </select>
+                <input type="text" class="resumo-input" placeholder="Resumo da alteração">
+                <button class="btn-remove" onclick="removerRepositorio(this)" title="Remover repositório">×</button>
+            `;
+            container.appendChild(novoRepo);
+        }
+
+        function removerRepositorio(botao) {
+            const container = botao.parentElement;
+            container.remove();
+        }
+
+        function limparTudo() {
+            document.getElementById('processo').value = '';
+            document.getElementById('processoError').textContent = '';
+            document.getElementById('processo').classList.remove('error');
+            
+            const scriptsContainer = document.getElementById('scriptsContainer');
+            scriptsContainer.innerHTML = '<div class="script-container"><input type="text" class="script-input" placeholder="Digite o script"></div>';
+            
+            document.getElementById('retrabalho').checked = false;
+            
+            const repositoriosContainer = document.getElementById('repositoriosContainer');
+            repositoriosContainer.innerHTML = `
+                <div class="repo-group">
+                    <select class="repositorio-select">
+                        <option value="">Selecione...</option>
+                        <option value="cpe-jdk-execucao">cpe-jdk-execucao</option>
+                        <option value="cpe-jdk-basecontabil">cpe-jdk-basecontabil</option>
+                    </select>
+                    <input type="text" class="resumo-input" placeholder="Resumo da alteração">
+                </div>
+            `;
+            
+            document.getElementById('detalhamento').value = '';
+        }
+
+        function validarProcesso() {
+            const processo = document.getElementById('processo').value;
+            const processoError = document.getElementById('processoError');
+            const processoInput = document.getElementById('processo');
+            
+            if (!processo) {
+                processoError.textContent = 'O campo Processo é obrigatório';
+                processoInput.classList.add('error');
+                return false;
+            }
+            
+            const regex = /^\d{6}\/\d{4}$/;
+            if (!regex.test(processo)) {
+                processoError.textContent = 'Formato inválido. Use o formato 000000/0000';
+                processoInput.classList.add('error');
+                return false;
+            }
+            
+            processoError.textContent = '';
+            processoInput.classList.remove('error');
+            return true;
+        }
+
+        function finalizar() {
+            if (!validarProcesso()) {
+                alert('Por favor, preencha o campo Processo corretamente.');
+                return;
+            }
+            
+            const processo = document.getElementById('processo').value;
+            const retrabalho = document.getElementById('retrabalho').checked;
+            
+            const scriptInputs = document.querySelectorAll('.script-input');
+            const scripts = Array.from(scriptInputs)
+                .map(input => input.value.trim())
+                .filter(script => script !== '');
+            
+            const repoGroups = document.querySelectorAll('.repo-group');
+            const repositorios = Array.from(repoGroups).map(group => {
+                const select = group.querySelector('.repositorio-select');
+                const input = group.querySelector('.resumo-input');
+                return {
+                    repositorio: select.value,
+                    resumo: input.value.trim()
+                };
+            }).filter(repo => repo.repositorio && repo.resumo);
+            
+            const container = document.getElementById('mensagensCommitContainer');
+            container.innerHTML = '';
+            
+            if (repositorios.length === 0) {
+                let msg = '';
+                if (retrabalho) msg += '[RETRABALHO] ';
+                msg += processo;
+                if (scripts.length > 0) msg += ' [SCRIPT]';
+                
+                const repoCommitDiv = document.createElement('div');
+                repoCommitDiv.className = 'repo-commit';
+                repoCommitDiv.innerHTML = `
+                    <div class="message-box">${msg}</div>
+                    <button class="btn-copy" style="margin-top: 10px;" onclick="copiarTextoElemento(this.previousElementSibling)">Copiar</button>
+                `;
+                container.appendChild(repoCommitDiv);
+            } else {
+                repositorios.forEach((repo) => {
+                    let msg = '';
+                    if (retrabalho) msg += '[RETRABALHO] ';
+                    msg += processo;
+                    if (scripts.length > 0) msg += ' [SCRIPT]';
+                    msg += ' - ' + repo.resumo;
+                    
+                    const repoCommitDiv = document.createElement('div');
+                    repoCommitDiv.className = 'repo-commit';
+                    repoCommitDiv.innerHTML = `
+                        <h4>Repositório: ${repo.repositorio}</h4>
+                        <div class="message-box">${msg}</div>
+                        <button class="btn-copy" style="margin-top: 10px;" onclick="copiarTextoElemento(this.previousElementSibling)">Copiar</button>
+                    `;
+                    container.appendChild(repoCommitDiv);
+                });
+            }
+            
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function fecharModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        function copiarTexto(elementId) {
+            const texto = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('Texto copiado para a área de transferência!');
+            }).catch(err => {
+                console.error('Erro ao copiar texto:', err);
+                alert('Erro ao copiar texto. Tente novamente.');
+            });
+        }
+
+        function copiarTextoElemento(elemento) {
+            const texto = elemento.textContent;
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('Texto copiado para a área de transferência!');
+            }).catch(err => {
+                console.error('Erro ao copiar texto:', err);
+                alert('Erro ao copiar texto. Tente novamente.');
+            });
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                fecharModal();
+            }
+        }
+    </script>
+</body>
+</html>
