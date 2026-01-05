@@ -341,7 +341,8 @@
                 </div>
                 <div class="modal-section">
                     <h3>Resposta de Protocolo</h3>
-                    <div class="message-box" id="mensagemProtocolo">Em desenvolvimento...</div>
+                    <div class="message-box" id="mensagemProtocolo"></div>
+                    <button class="btn-copy" style="margin-top: 10px;" onclick="copiarTexto('mensagemProtocolo')">Copiar</button>
                 </div>
             </div>
             <div class="modal-footer">
@@ -467,6 +468,7 @@
             
             const processo = document.getElementById('processo').value;
             const retrabalho = document.getElementById('retrabalho').checked;
+            const detalhamento = document.getElementById('detalhamento').value.trim();
             
             const scriptInputs = document.querySelectorAll('.script-input');
             const scripts = Array.from(scriptInputs)
@@ -483,14 +485,18 @@
                 };
             }).filter(repo => repo.repositorio && repo.resumo);
             
+            // Gerar mensagens de commit
             const container = document.getElementById('mensagensCommitContainer');
             container.innerHTML = '';
+            
+            const commits = [];
             
             if (repositorios.length === 0) {
                 let msg = '';
                 if (retrabalho) msg += '[RETRABALHO] ';
                 msg += processo;
                 if (scripts.length > 0) msg += ' [SCRIPT]';
+                commits.push({ repositorio: null, mensagem: msg });
                 
                 const repoCommitDiv = document.createElement('div');
                 repoCommitDiv.className = 'repo-commit';
@@ -506,6 +512,7 @@
                     msg += processo;
                     if (scripts.length > 0) msg += ' [SCRIPT]';
                     msg += ' - ' + repo.resumo;
+                    commits.push({ repositorio: repo.repositorio, mensagem: msg });
                     
                     const repoCommitDiv = document.createElement('div');
                     repoCommitDiv.className = 'repo-commit';
@@ -517,6 +524,36 @@
                     container.appendChild(repoCommitDiv);
                 });
             }
+            
+            // Gerar resposta de protocolo
+            let respostaProtocolo = 'Commits:\n';
+            commits.forEach((commit, index) => {
+                if (commit.repositorio) {
+                    respostaProtocolo += commit.repositorio + ': ' + commit.mensagem;
+                } else {
+                    respostaProtocolo += commit.mensagem;
+                }
+                if (index < commits.length - 1) {
+                    respostaProtocolo += '\n';
+                }
+            });
+            
+            if (scripts.length > 0) {
+                respostaProtocolo += '\n\nScripts:\n';
+                scripts.forEach((script, index) => {
+                    respostaProtocolo += script;
+                    if (index < scripts.length - 1) {
+                        respostaProtocolo += '\n';
+                    }
+                });
+            }
+            
+            if (detalhamento) {
+                respostaProtocolo += '\n\nDetalhamento da Alteração:\n';
+                respostaProtocolo += detalhamento;
+            }
+            
+            document.getElementById('mensagemProtocolo').textContent = respostaProtocolo;
             
             document.getElementById('modal').classList.add('show');
         }
