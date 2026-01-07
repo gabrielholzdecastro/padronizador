@@ -86,23 +86,39 @@
         }
 
         .repo-group {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background-color: #fafafa;
         }
 
         .repo-group select {
-            flex: 1;
+            width: 100%;
+            margin-bottom: 10px;
         }
 
         .repo-group input {
-            flex: 2;
+            width: 100%;
+        }
+
+        .repo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .repo-header select {
+            flex: 1;
+            margin-bottom: 0;
+            margin-right: 10px;
         }
 
         .repo-group .btn-remove {
             width: 30px;
             height: 38px;
+            flex-shrink: 0;
         }
 
         button {
@@ -407,31 +423,33 @@
             const novoRepo = document.createElement('div');
             novoRepo.className = 'repo-group';
             novoRepo.innerHTML = `
-                <select class="repositorio-select">
-                    <option value="">Selecione...</option>
-                    <option value="cpe-jdk-basecontabil">cpe-jdk-basecontabil</option>
-                    <option value="cpe-jdk-contacorrente">cpe-jdk-contacorrente</option>
-                    <option value="cpe-jdk-cpebase">cpe-jdk-cpebase</option>
-                    <option value="cpe-jdk-cpedicionario">cpe-jdk-cpedicionario</option>
-                    <option value="cpe-jdk-cpeintegracaorhf">cpe-jdk-cpeintegracaorhf</option>
-                    <option value="cpe-jdk-cperelatorios">cpe-jdk-cperelatorios</option>
-                    <option value="cpe-jdk-execucao">cpe-jdk-execucao</option>
-                    <option value="cpe-jdk-lrf">cpe-jdk-lrf</option>
-                    <option value="cpe-jdk-orcamento">cpe-jdk-orcamento</option>
-                    <option value="cpe-jdk-planejamento">cpe-jdk-planejamento</option>
-                    <option value="cpe-jdk-prestacaocontas">cpe-jdk-prestacaocontas</option>
-                    <option value="cpe-jdk-reinf">cpe-jdk-reinf</option>
-                    <option value="cpe-jdk-sicom">cpe-jdk-sicom</option>
-                </select>
+                <div class="repo-header">
+                    <select class="repositorio-select">
+                        <option value="">Selecione...</option>
+                        <option value="cpe-jdk-basecontabil">cpe-jdk-basecontabil</option>
+                        <option value="cpe-jdk-contacorrente">cpe-jdk-contacorrente</option>
+                        <option value="cpe-jdk-cpebase">cpe-jdk-cpebase</option>
+                        <option value="cpe-jdk-cpedicionario">cpe-jdk-cpedicionario</option>
+                        <option value="cpe-jdk-cpeintegracaorhf">cpe-jdk-cpeintegracaorhf</option>
+                        <option value="cpe-jdk-cperelatorios">cpe-jdk-cperelatorios</option>
+                        <option value="cpe-jdk-execucao">cpe-jdk-execucao</option>
+                        <option value="cpe-jdk-lrf">cpe-jdk-lrf</option>
+                        <option value="cpe-jdk-orcamento">cpe-jdk-orcamento</option>
+                        <option value="cpe-jdk-planejamento">cpe-jdk-planejamento</option>
+                        <option value="cpe-jdk-prestacaocontas">cpe-jdk-prestacaocontas</option>
+                        <option value="cpe-jdk-reinf">cpe-jdk-reinf</option>
+                        <option value="cpe-jdk-sicom">cpe-jdk-sicom</option>
+                    </select>
+                    <button class="btn-remove" onclick="removerRepositorio(this)" title="Remover repositório">×</button>
+                </div>
                 <input type="text" class="resumo-input" placeholder="Resumo da alteração">
-                <button class="btn-remove" onclick="removerRepositorio(this)" title="Remover repositório">×</button>
             `;
             container.appendChild(novoRepo);
         }
 
         function removerRepositorio(botao) {
-            const container = botao.parentElement;
-            container.remove();
+            const repoGroup = botao.closest('.repo-group');
+            repoGroup.remove();
         }
 
         function limparTudo() {
