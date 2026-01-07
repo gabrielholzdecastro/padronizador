@@ -618,18 +618,44 @@
 
         function copiarTexto(elementId) {
             const texto = document.getElementById(elementId).textContent;
+            const botao = event.target;
+            
             navigator.clipboard.writeText(texto).then(() => {
-                alert('Texto copiado para a área de transferência!');
+                const textoOriginal = botao.textContent;
+                const corOriginal = botao.style.backgroundColor;
+                
+                botao.textContent = '✓ Copiado!';
+                botao.style.backgroundColor = '#28a745';
+                botao.disabled = true;
+                
+                setTimeout(() => {
+                    botao.textContent = textoOriginal;
+                    botao.style.backgroundColor = corOriginal;
+                    botao.disabled = false;
+                }, 2000);
             }).catch(err => {
                 console.error('Erro ao copiar texto:', err);
                 alert('Erro ao copiar texto. Tente novamente.');
             });
         }
-
+        
         function copiarTextoElemento(elemento) {
             const texto = elemento.textContent;
+            const botao = event.target;
+            
             navigator.clipboard.writeText(texto).then(() => {
-                alert('Texto copiado para a área de transferência!');
+                const textoOriginal = botao.textContent;
+                const corOriginal = botao.style.backgroundColor;
+                
+                botao.textContent = '✓ Copiado!';
+                botao.style.backgroundColor = '#28a745';
+                botao.disabled = true;
+                
+                setTimeout(() => {
+                    botao.textContent = textoOriginal;
+                    botao.style.backgroundColor = corOriginal;
+                    botao.disabled = false;
+                }, 2000);
             }).catch(err => {
                 console.error('Erro ao copiar texto:', err);
                 alert('Erro ao copiar texto. Tente novamente.');
