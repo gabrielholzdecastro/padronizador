@@ -291,6 +291,52 @@
         .btn-close:hover {
             background-color: #545b62;
         }
+
+        .relatorios-section {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        .relatorios-section.show {
+            display: block;
+        }
+
+        .relatorio-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .relatorio-item input[type="text"] {
+            flex: 1;
+        }
+
+        .relatorio-item .checkbox-group {
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .relatorio-item .btn-remove {
+            width: 30px;
+            height: 38px;
+            flex-shrink: 0;
+        }
+
+        .btn-add-relatorio {
+            background-color: #17a2b8;
+            color: white;
+            padding: 8px 16px;
+            margin-top: 10px;
+        }
+
+        .btn-add-relatorio:hover {
+            background-color: #138496;
+        }
     </style>
 </head>
 <body>
@@ -326,7 +372,7 @@
             <label>Repositório e Resumo</label>
             <div id="repositoriosContainer">
                 <div class="repo-group">
-                    <select class="repositorio-select">
+                    <select class="repositorio-select" onchange="toggleRelatorios(this)">
                         <option value="">Selecione...</option>
                         <option value="cpe-jdk-basecontabil">cpe-jdk-basecontabil</option>
                         <option value="cpe-jdk-contacorrente">cpe-jdk-contacorrente</option>
@@ -345,6 +391,18 @@
                         <option value="cpe-jdk-versaobanco">cpe-jdk-versaobanco</option>
                     </select>
                     <input type="text" class="resumo-input" placeholder="Resumo da alteração">
+                    <div class="relatorios-section">
+                        <div class="relatorios-container">
+                            <div class="relatorio-item">
+                                <input type="text" class="relatorio-nome" placeholder="Nome do relatório">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" class="relatorio-prod">
+                                    <label style="margin-bottom: 0;">Atualizado em produção</label>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-add-relatorio" type="button" onclick="adicionarRelatorio(this)">Adicionar relatório</button>
+                    </div>
                 </div>
             </div>
             <button class="btn-secondary" style="margin-top: 10px;" onclick="adicionarRepositorio()">Adicionar repositório</button>
@@ -426,7 +484,7 @@
             novoRepo.className = 'repo-group';
             novoRepo.innerHTML = `
                 <div class="repo-header">
-                    <select class="repositorio-select">
+                    <select class="repositorio-select" onchange="toggleRelatorios(this)">
                         <option value="">Selecione...</option>
                         <option value="cpe-jdk-basecontabil">cpe-jdk-basecontabil</option>
                         <option value="cpe-jdk-contacorrente">cpe-jdk-contacorrente</option>
@@ -447,6 +505,18 @@
                     <button class="btn-remove" onclick="removerRepositorio(this)" title="Remover repositório">×</button>
                 </div>
                 <input type="text" class="resumo-input" placeholder="Resumo da alteração">
+                <div class="relatorios-section">
+                    <div class="relatorios-container">
+                        <div class="relatorio-item">
+                            <input type="text" class="relatorio-nome" placeholder="Nome do relatório">
+                            <div class="checkbox-group">
+                                <input type="checkbox" class="relatorio-prod">
+                                <label style="margin-bottom: 0;">Atualizado em produção</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-add-relatorio" type="button" onclick="adicionarRelatorio(this)">Adicionar relatório</button>
+                </div>
             `;
             container.appendChild(novoRepo);
         }
@@ -454,6 +524,37 @@
         function removerRepositorio(botao) {
             const repoGroup = botao.closest('.repo-group');
             repoGroup.remove();
+        }
+
+        function toggleRelatorios(selectElement) {
+            const repoGroup = selectElement.closest('.repo-group');
+            const relatoriosSection = repoGroup.querySelector('.relatorios-section');
+            
+            if (selectElement.value === 'cpe-jdk-relatorios') {
+                relatoriosSection.classList.add('show');
+            } else {
+                relatoriosSection.classList.remove('show');
+            }
+        }
+
+        function adicionarRelatorio(botao) {
+            const relatoriosContainer = botao.previousElementSibling;
+            const novoRelatorio = document.createElement('div');
+            novoRelatorio.className = 'relatorio-item';
+            novoRelatorio.innerHTML = `
+                <input type="text" class="relatorio-nome" placeholder="Nome do relatório">
+                <div class="checkbox-group">
+                    <input type="checkbox" class="relatorio-prod">
+                    <label style="margin-bottom: 0;">Atualizado em produção</label>
+                </div>
+                <button class="btn-remove" onclick="removerRelatorio(this)" title="Remover relatório">×</button>
+            `;
+            relatoriosContainer.appendChild(novoRelatorio);
+        }
+
+        function removerRelatorio(botao) {
+            const relatorioItem = botao.closest('.relatorio-item');
+            relatorioItem.remove();
         }
 
         function limparTudo() {
@@ -469,7 +570,7 @@
             const repositoriosContainer = document.getElementById('repositoriosContainer');
             repositoriosContainer.innerHTML = `
                 <div class="repo-group">
-                    <select class="repositorio-select">
+                    <select class="repositorio-select" onchange="toggleRelatorios(this)">
                         <option value="">Selecione...</option>
                         <option value="cpe-jdk-basecontabil">cpe-jdk-basecontabil</option>
                         <option value="cpe-jdk-contacorrente">cpe-jdk-contacorrente</option>
@@ -488,6 +589,18 @@
                         <option value="cpe-jdk-versaobanco">cpe-jdk-versaobanco</option>
                     </select>
                     <input type="text" class="resumo-input" placeholder="Resumo da alteração">
+                    <div class="relatorios-section">
+                        <div class="relatorios-container">
+                            <div class="relatorio-item">
+                                <input type="text" class="relatorio-nome" placeholder="Nome do relatório">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" class="relatorio-prod">
+                                    <label style="margin-bottom: 0;">Atualizado em produção</label>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-add-relatorio" type="button" onclick="adicionarRelatorio(this)">Adicionar relatório</button>
+                    </div>
                 </div>
             `;
             
@@ -536,9 +649,22 @@
             const repositorios = Array.from(repoGroups).map(group => {
                 const select = group.querySelector('.repositorio-select');
                 const input = group.querySelector('.resumo-input');
+                
+                // Coletar informações dos relatórios se o repositório for cpe-jdk-relatorios
+                let relatorios = [];
+                if (select.value === 'cpe-jdk-relatorios') {
+                    const relatorioItems = group.querySelectorAll('.relatorio-item');
+                    relatorios = Array.from(relatorioItems).map(item => {
+                        const nome = item.querySelector('.relatorio-nome').value.trim();
+                        const prod = item.querySelector('.relatorio-prod').checked;
+                        return { nome, prod };
+                    }).filter(rel => rel.nome !== '');
+                }
+                
                 return {
                     repositorio: select.value,
-                    resumo: input.value.trim()
+                    resumo: input.value.trim(),
+                    relatorios: relatorios
                 };
             }).filter(repo => repo.repositorio && repo.resumo);
             
@@ -600,6 +726,24 @@
                 scripts.forEach((script, index) => {
                     respostaProtocolo += script;
                     if (index < scripts.length - 1) {
+                        respostaProtocolo += '\n';
+                    }
+                });
+            }
+            
+            // Adicionar relatórios se houver
+            const todosRelatorios = repositorios
+                .filter(repo => repo.relatorios && repo.relatorios.length > 0)
+                .flatMap(repo => repo.relatorios);
+            
+            if (todosRelatorios.length > 0) {
+                respostaProtocolo += '\n\nRelatórios:\n';
+                todosRelatorios.forEach((relatorio, index) => {
+                    respostaProtocolo += relatorio.nome;
+                    if (relatorio.prod) {
+                        respostaProtocolo += ' (Atualizado em produção)';
+                    }
+                    if (index < todosRelatorios.length - 1) {
                         respostaProtocolo += '\n';
                     }
                 });
